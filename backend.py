@@ -1,5 +1,5 @@
 """ This is the newly added backend. It features a menu where we can add items, 
-remove items, and update the price """
+remove items, and update the prices """
 
 import json
 
@@ -11,16 +11,17 @@ def load_menu():
         with open('menu.json', 'r', encoding='utf-8') as file:
             return json.load(file)
     except FileNotFoundError:
-        print("Error: 'menu.json' not found. Creating a new menu.")
+        print("\nError: 'menu.json' not found. Creating a new menu.")
         return {}  # Return an empty dictionary if the file is missing
 
 def save_menu(menu):
     """Saves the menu data to 'menu.json'."""
+    print("\nSaving the menu...")
     try:
         with open('menu.json', 'w', encoding='utf-8') as file:
             json.dump(menu, file, indent=4)
     except (IOError, json.JSONDecodeError) as e:  # Catch potential errors
-        print(f"Error saving menu: {e}")
+        print(f"\nError saving menu: {e}")
 
 def add_item(menu):
     """Adds a new item to the menu."""
@@ -31,14 +32,14 @@ def add_item(menu):
             try:
                 new_price = float(new_price_str)
                 if new_price <= 0:
-                    raise ValueError("Price must be positive.")  # Extra check
+                    raise ValueError("\nPrice must be positive.")  # Extra check
                 menu[new_item] = new_price
                 print(f"\n{new_item} added to the menu successfully!")
                 break  # Exit the loop on successful input
             except ValueError:
                 print("\nInvalid price. Please enter a positive number.")
     else:  # This 'else' must align with the 'if'
-        print("Invalid format. Please use letters, numbers, and underscores (3-20 characters)")
+        print("\nInvalid format. Please use letters, numbers, and underscores (3-20 characters)")
 
 def confirm(message):
     """Asks the user for confirmation."""
@@ -49,14 +50,16 @@ def confirm(message):
         elif answer == 'no':
             return False
         else:
-            print("Invalid input. Please enter 'yes' or 'no'.")
+            print("\nInvalid input. Please enter 'yes' or 'no'.")
 
 def remove_item(menu):
-    """Removes an item from the menu."""
-    item_to_remove = input("\nEnter the name of the item to remove: ")
-    if item_to_remove.lower() in menu:
+    item_to_remove = input("\nEnter the name of the item to remove: ").strip().lower()
+    if item_to_remove in (item.lower() for item in menu):
         if confirm(f"\nAre you sure you want to remove {item_to_remove}? "):
-            del menu[item_to_remove]
+            for item in list(menu.keys()):
+                if item.lower() == item_to_remove:
+                    del menu[item]
+                    break
             print(f"\n{item_to_remove} removed from the menu.")
         else:
             print("\nRemoval canceled.")
@@ -72,9 +75,9 @@ def update_price(menu):
             try:
                 new_price = float(new_price_str)
                 if new_price <= 0:
-                    raise ValueError("Price must be positive.")
+                    raise ValueError("\nPrice must be positive.")
                 menu[item_to_update] = new_price  # Keep original capitalization in the menu
-                print(f"Price for {item_to_update} updated successfully!")
+                print(f"\nPrice for {item_to_update} updated successfully!")
                 break
             except ValueError:
                 print("\nInvalid price. Please enter a positive number.")
@@ -110,7 +113,8 @@ if __name__ == "__main__":
         elif choice == '4':
             update_price(menu)
         elif choice == '5':
-            if confirm("\nAre you sure you want to exit without saving? "):
+            print("\nExiting...")  # Add this line 
+            if confirm("\nAre you sure you want to exit? "):
                 save_menu(menu)  # Save the menu before exiting
                 print("\nGoodbye!")
                 break  # Exit the loop
