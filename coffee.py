@@ -4,16 +4,23 @@ and calculates the total cost of an order. """
 
 import json
 
+import csv
+from datetime import datetime
+from backend import load_orders, display_order_history
+
 # Menu and prices
 with open('menu.json', 'r', encoding='utf-8') as file:
     menu = json.load(file)
 
 # Welcome message
-print("Hello, welcome to Jitters's Coffee Shop ☕️")
+print("Hello, welcome to Jitters's Coffee Shop ☕️\n")
 
 # Get the customer's name
 name = input("Let's start with introductions! What's your name? ")
 print(f"\nNice to meet you, {name.capitalize()}! Let's see what we can get you.")
+
+# Load existing orders
+orders = load_orders()
 
 # Display the menu with formatting
 print("\nHere's what we're serving today:")
@@ -21,7 +28,7 @@ for item, price in menu.items():
     print(f"\t• {item.capitalize()}: £{price:.2f}")
 
 # Order taking loop
-order_items = []  # Store the customer's order
+order_items = {}  # Store the customer's order
 while True:
     order = input("\nWhat would you like to order? (Type 'menu' to see options) ").title()
     if order == "Menu":
@@ -37,9 +44,12 @@ while True:
             break
 
         quantity_str = input(f"\nGreat choice! How many {order.lower()}'s would you like? ")
-        if quantity_str.isdigit() and int(quantity_str) > 0:
+        if quantity_str.isdigit():
             quantity = int(quantity_str)
-            order_items.append((order, quantity))
+            if order.lower() in order_items:  # Check if item already exists
+                order_items[order.lower()] += quantity  # Increase quantity
+            else:
+                order_items[order.lower()] = quantity  # Add the item
             break
         else:
             print("\nPlease enter a valid quantity.")
@@ -52,16 +62,33 @@ while True:
 
 # Order Summary
 print(f"\nGreat choices, {name.capitalize()}! For your order, I have:")
-for i, (item, quantity) in enumerate(order_items):
+
+for i, (item, quantity) in enumerate(order_items.items()):
     print(f"\t{i + 1}. {quantity} {item}{'s' if quantity > 1 else ''}")
 
 # Calculate the total price
 TOTAL_PRICE = 0.0
-for item, quantity in order_items:
+for item, quantity in order_items.items():
     price = menu.get(item.lower())
     if price is not None:
         TOTAL_PRICE += price * quantity
 print(f"\nYour total comes to: £{TOTAL_PRICE:.2f}")
+
+# Create an order dictionary
+order = {
+    "customer": name, 
+    "items": order_items,  # Directly use the order_items dictionary
+    "total": TOTAL_PRICE,
+    "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M")
+}
+orders.append(order)
+
+# Save orders to CSV
+with open('orders.csv', 'w', newline='', encoding='utf-8') as file:
+    fieldnames = ['customer', 'items', 'total', 'timestamp']  # Add 'timestamp'
+    writer = csv.DictWriter(file, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(orders)
 
 # Payment Handling
 PAYMENT_METHOD = ""
@@ -75,13 +102,13 @@ if PAYMENT_METHOD == "cash":
     print(f"\nThank you for paying with cash, {name.capitalize()}!")
     print("We'll have your order ready for you in just a few moments.")
 elif PAYMENT_METHOD == "card":
-    print(f"\nThank you, {name.capitalize()}.")
+    print(f"\nThank you, {name.capitalize()}.\n")
     print("Please insert your card, and we'll process your payment right away.")
 
 # Final Message with Order Details
 print(f"\nJust a reminder {name.capitalize()}, your order includes:")
-for i, (item, quantity) in enumerate(order_items):
+for i, (item, quantity) in enumerate(order_items.items()):
     print(f"\t{i + 1}. {quantity} {item}{'s' if quantity > 1 else ''}")
 
 print(f"""\nThanks again for choosing Jitters's Coffee Shop {name.capitalize()}!
-We hope you enjoy your drinks!""")
+\nWe hope you enjoy your drinks!""")
