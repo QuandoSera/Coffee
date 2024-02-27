@@ -65,17 +65,17 @@ def remove_item(menu):
 
 def update_price(menu):
     """Updates the price of items on the menu."""
-    item_to_update = input("\nEnter the name of the item to update: ")
-    if item_to_update in menu:
+    item_to_update = input("\nEnter the name of the item to update: ").strip().lower()  # Convert to lowercase
+    if item_to_update in menu.keys():  # Use lowercase for the menu too
         while True:
             new_price_str = input(f"\nEnter the new price for {item_to_update}: £")
             try:
                 new_price = float(new_price_str)
                 if new_price <= 0:
                     raise ValueError("Price must be positive.")
-                menu[item_to_update] = new_price
+                menu[item_to_update] = new_price  # Keep original capitalization in the menu
                 print(f"Price for {item_to_update} updated successfully!")
-                break  # Exit the loop
+                break  
             except ValueError:
                 print("\nInvalid price. Please enter a positive number.")
     else:
