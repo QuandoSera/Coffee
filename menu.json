@@ -1,8 +1,8 @@
 {
     "black coffee": 3,
-    "espresso": 2,
+    "espresso": 2.50,
     "latte": 4,
     "cappuccino": 4,
-    "cortado": 3,
-    "flat white": 3
+    "cortado": 3.50,
+    "flat white": 3.50
 }

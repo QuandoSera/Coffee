@@ -2,15 +2,11 @@
 It features a menu with prices, order customization, input validation, 
 and calculates the total cost of an order. """
 
+import json
+
 # Menu and prices
-menu = {
-    "black coffee": 3.50,
-    "espresso": 2.50,
-    "latte": 4,
-    "cappuccino": 4,
-    "cortado": 3,
-    "flat white": 3.50
-}
+with open('menu.json', 'r') as file:
+    menu = json.load(file)
 
 # Welcome message
 print("Hello, welcome to Jitters's Coffee Shop ☕️")
