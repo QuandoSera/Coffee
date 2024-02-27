@@ -67,7 +67,7 @@ def remove_item(menu):
         print(f"\n{item_to_remove} not found in the menu.")
 
 def update_price(menu):
-    """Updates the price of items on the menu."""
+    """Updates the price of items on the menu.""£
     item_to_update = input("\nEnter the name of the item to update: ").strip().lower()
     if item_to_update in menu.keys():  # Use lowercase for the menu too
         while True:
