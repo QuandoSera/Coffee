@@ -55,11 +55,11 @@ def remove_item(menu):
     """Removes an item from the menu."""
     item_to_remove = input("\nEnter the name of the item to remove: ")
     if item_to_remove.lower() in menu:
-        if confirm(f"Are you sure you want to remove {item_to_remove}? "):
+        if confirm(f"\nAre you sure you want to remove {item_to_remove}? "):
             del menu[item_to_remove]
             print(f"\n{item_to_remove} removed from the menu.")
         else:
-            print("Removal canceled.")
+            print("\nRemoval canceled.")
     else:
         print(f"\n{item_to_remove} not found in the menu.")
 
@@ -83,7 +83,7 @@ def update_price(menu):
 
 def display_menu(menu):
     """Displays the menu."""
-    print("Current Menu:")
+    print("\nCurrent Menu:\n")
     for item, price in menu.items():
         print(f"\t• {item.capitalize()}: £{price:.2f}")
 
@@ -110,11 +110,11 @@ if __name__ == "__main__":
         elif choice == '4':
             update_price(menu)
         elif choice == '5':
-            if confirm("Are you sure you want to exit without saving? "):
+            if confirm("\nAre you sure you want to exit without saving? "):
                 save_menu(menu)  # Save the menu before exiting
                 print("\nGoodbye!")
                 break  # Exit the loop
             else:
-                print("Continuing menu management...")
+                print("\nContinuing menu management...")
         else:
             print("\nInvalid choice. Please try again.")
