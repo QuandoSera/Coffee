@@ -1,14 +1,20 @@
+""" This is the newly added backend. It features a menu where we can add items, 
+remove items, and update the price """
+
 import json
 
-def load_menu(filename="menu.json"):
-    with open(filename, 'r') as file:
+def load_menu():
+    """Loads the menu data from 'menu.json'."""
+    with open('menu.json', 'r', encoding='utf-8') as file:
         return json.load(file)
 
-def save_menu(menu, filename="menu.json"):
-    with open(filename, 'w') as file:
+def save_menu(menu):
+    """Saves the menu data to 'menu.json'."""
+    with open('menu.json', 'w', encoding='utf-8') as file:
         json.dump(menu, file, indent=4)
 
 def add_item(menu):
+    """Adds a new item to the menu."""
     new_item = input("\nEnter the name of the new item: ")
     new_price_str = input(f"\nEnter the price for {new_item}: £")
     try:
@@ -19,6 +25,7 @@ def add_item(menu):
         print("\nInvalid price. Please enter a number.")
 
 def remove_item(menu):
+    """Removes an item from the menu."""
     item_to_remove = input("\nEnter the name of the item to remove: ")
     if item_to_remove in menu:
         del menu[item_to_remove]
@@ -27,6 +34,7 @@ def remove_item(menu):
         print(f"\n{item_to_remove} not found in the menu.")
 
 def update_price(menu):
+    """Updates the price of items on the menu."""
     item_to_update = input("\nEnter the name of the item to update: ")
     if item_to_update in menu:
         new_price_str = input(f"\nEnter the new price for {item_to_update}: £")
@@ -40,6 +48,7 @@ def update_price(menu):
         print(f"\n{item_to_update} not found in the menu.")
 
 def display_menu(menu):
+    """Displays the menu."""
     print("Current Menu:")
     for item, price in menu.items():
         print(f"\t• {item.capitalize()}: £{price:.2f}")
@@ -67,7 +76,7 @@ if __name__ == "__main__":
         elif choice == '4':
             update_price(menu)
         elif choice == '5':
-            save_menu(menu)
+            save_menu(menu)  # Pass 'menu' to save_menu
             print("\nMenu updates saved. Goodbye!")
             break
         else:

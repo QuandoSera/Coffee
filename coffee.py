@@ -5,7 +5,7 @@ and calculates the total cost of an order. """
 import json
 
 # Menu and prices
-with open('menu.json', 'r') as file:
+with open('menu.json', 'r', encoding='utf-8') as file:
     menu = json.load(file)
 
 # Welcome message
