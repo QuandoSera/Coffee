@@ -53,6 +53,7 @@ def confirm(message):
             print("\nInvalid input. Please enter 'yes' or 'no'.")
 
 def remove_item(menu):
+    """Removes items from the menu."""
     item_to_remove = input("\nEnter the name of the item to remove: ").strip().lower()
     if item_to_remove in (item.lower() for item in menu):
         if confirm(f"\nAre you sure you want to remove {item_to_remove}? "):
@@ -113,7 +114,7 @@ if __name__ == "__main__":
         elif choice == '4':
             update_price(menu)
         elif choice == '5':
-            print("\nExiting...")  # Add this line 
+            print("\nExiting...")  # Add this line
             if confirm("\nAre you sure you want to exit? "):
                 save_menu(menu)  # Save the menu before exiting
                 print("\nGoodbye!")
