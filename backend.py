@@ -13,7 +13,7 @@ def display_order_history(orders, customer_name=None, page_number=1):
     """Displays order history, optionally filtered by customer_name."""
     print("\nCurrent page:", page_number)
 
-    filtered_orders = orders.copy()  # Use the copy() method 
+    filtered_orders = orders.copy()  # Use the copy() method
 
     if customer_name:
         filtered_orders = [order for order in orders if order.get("customer").lower() == customer_name]
@@ -148,15 +148,15 @@ def load_orders():
             orders = list(reader)
 
             for order in orders:
-                if isinstance(order['items'], str): 
-                    order['items'] = ast.literal_eval(order['items']) 
+                if isinstance(order['items'], str):
+                    order['items'] = ast.literal_eval(order['items'])
 
                 # Convert the timestamp string into a datetime object
                 date_str = order['timestamp']
                 date_obj = datetime.datetime.strptime(date_str, '%d/%m/%Y %H:%M')
-                order['timestamp'] = date_obj 
+                order['timestamp'] = date_obj
 
-            # print("Orders loaded:", orders)  
+            # print("Orders loaded:", orders)
             return orders
     except FileNotFoundError:
         return []
@@ -165,8 +165,8 @@ def show_navigation(total_orders, current_page):
     max_page = (total_orders // ORDERS_PER_PAGE) + 1  # Existing calculation
 
     # Adjust only if needed:
-    if total_orders <= ORDERS_PER_PAGE: 
-        max_page = 1  
+    if total_orders <= ORDERS_PER_PAGE:
+        max_page = 1
 
     if current_page > 1:
         print("1. Previous Page")
@@ -191,8 +191,8 @@ def view_order_history():
 
     customer_name = input("\nEnter a customer's name (optional): ").lower()
     if customer_name:  # Only if filtering is requested
-        display_order_history(orders, customer_name=customer_name, page_number=1) 
-    else: 
+        display_order_history(orders, customer_name=customer_name, page_number=1)
+    else:
         display_order_history(all_orders, page_number=1) # Use the unfiltered list
 
         print("Total Orders:", len(all_orders))
