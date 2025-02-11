@@ -16,7 +16,7 @@ def get_customer_name():
 
 def take_order(menu):
     """Takes the customer's order with input validation."""
-    order_items =
+    order_items =  # Initialise as an empty list
     while True:
         display_menu(menu)
         while True:
@@ -81,7 +81,6 @@ def thank_you_message(name):
     print(f"\nThank you for choosing Jitters' Coffee Shop, {name}!")
     print("We hope you enjoy your drinks!")
 
-
 def main():
     """Main function to run the coffee shop simulation."""
     try:
@@ -106,7 +105,6 @@ def main():
 
     handle_payment(total, name)
     thank_you_message(name)
-
 
 if __name__ == "__main__":
     main()
