@@ -1,87 +1,112 @@
-""" This small python project simulates a coffee shop ordering experience.
-It features a menu with prices, order customization, input validation, 
-and calculates the total cost of an order. """
-
 import json
 
-# Menu and prices
-with open('menu.json', 'r', encoding='utf-8') as file:
-    menu = json.load(file)
+def display_menu(menu):
+    """Displays the coffee shop menu."""
+    print("\nHere's what we're serving today:")
+    for item, price in menu.items():
+        print(f"\t• {item.capitalize()}: £{price:.2f}")
 
-# Welcome message
-print("Hello, welcome to Jitters's Coffee Shop ☕️")
-
-# Get the customer's name
-name = input("Let's start with introductions! What's your name? ")
-print(f"\nNice to meet you, {name.capitalize()}! Let's see what we can get you.")
-
-# Display the menu with formatting
-print("\nHere's what we're serving today:")
-for item, price in menu.items():
-    print(f"\t• {item.capitalize()}: £{price:.2f}")
-
-# Order taking loop
-order_items = []  # Store the customer's order
-while True:
-    order = input("\nWhat would you like to order? (Type 'menu' to see options) ").title()
-    if order == "Menu":
-        print("\nNo problem! Here's the menu again:")
-        for item, price in menu.items():
-            print(f"\t• {item.capitalize()}: £{price:.2f}")
-        continue
-
+def get_customer_name():
+    """Gets the customer's name with input validation."""
     while True:
-        if order.lower() not in menu:
-            print(f"Sorry, it looks like we don't have '{order}'.")
-            print("Would you like to try something else from the menu?")
+        name = input("Let's start with introductions! What's your name? ")
+        if name:
+            return name.capitalize()
+        print("Please enter your name.")
+
+def take_order(menu):
+    """Takes the customer's order with input validation."""
+    order_items =
+    while True:
+        display_menu(menu)
+        while True:
+            order = input("\nWhat would you like to order? (or type 'done'): ").lower()
+            if order == 'done':
+                return order_items
+            if order in menu:
+                break
+            print(f"Sorry, we don't have '{order}'. Please choose from the menu.")
+
+        while True:
+            try:
+                quantity = int(input(f"How many {order}s would you like? "))
+                if quantity > 0:
+                    break
+                print("Please enter a positive integer quantity.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+
+        order_items.append((order, quantity))
+
+        another_order = input("Anything else? (yes/no): ").lower()
+        while another_order not in ("yes", "no"):
+            another_order = input("Please enter 'yes' or 'no': ").lower()
+        if another_order == "no":
             break
+    return order_items
 
-        quantity_str = input(f"\nGreat choice! How many {order.lower()}'s would you like? ")
-        if quantity_str.isdigit() and int(quantity_str) > 0:
-            quantity = int(quantity_str)
-            order_items.append((order, quantity))
+def calculate_total(order_items, menu):
+    """Calculates the total cost of the order."""
+    total = 0
+    for item, quantity in order_items:
+        price = menu.get(item)
+        if price is not None:
+            total += price * quantity
+    return total
+
+def print_order_summary(order_items):
+    """Prints a summary of the order."""
+    if not order_items:
+        print("\nNo items were ordered.")
+        return
+
+    print("\nYour order summary:")
+    for i, (item, quantity) in enumerate(order_items):
+        print(f"{i + 1}. {quantity} {item}{'s' if quantity > 1 else ''}")
+
+def handle_payment(total, name):
+    """Handles payment with input validation."""
+    while True:
+        payment_method = input(f"\nYour total is £{total:.2f}. How would you like to pay (cash/card)? ").lower()
+        if payment_method in ("cash", "card"):
             break
-        else:
-            print("\nPlease enter a valid quantity.")
+        print("We accept cash or card.")
 
-    another_order = input("\nWould you like to add anything else to your order (yes/no)? ").lower()
-    if another_order not in ("yes", "no"):
-        print("\nSorry, I didn't quite catch that. Could you please answer with 'yes' or 'no'?")
-    elif another_order == "no":
-        break
+    if payment_method == "cash":
+        print(f"\nThank you for paying with cash, {name}!")
+    else:  # card
+        print(f"\nThank you, {name}. Please insert your card to process the payment.")  # Simulated card payment
 
-# Order Summary
-print(f"\nGreat choices, {name.capitalize()}! For your order, I have:")
-for i, (item, quantity) in enumerate(order_items):
-    print(f"\t{i + 1}. {quantity} {item}{'s' if quantity > 1 else ''}")
+def thank_you_message(name):
+    print(f"\nThank you for choosing Jitters' Coffee Shop, {name}!")
+    print("We hope you enjoy your drinks!")
 
-# Calculate the total price
-TOTAL_PRICE = 0.0
-for item, quantity in order_items:
-    price = menu.get(item.lower())
-    if price is not None:
-        TOTAL_PRICE += price * quantity
-print(f"\nYour total comes to: £{TOTAL_PRICE:.2f}")
 
-# Payment Handling
-PAYMENT_METHOD = ""
-while PAYMENT_METHOD.lower() not in ("cash", "card"):
-    PAYMENT_METHOD = input("\nHow would you like to pay today (cash/card)? ").lower()
-    if PAYMENT_METHOD.lower() not in ("cash", "card"):
-        print("\nFor your convenience, we accept cash or card.")
+def main():
+    """Main function to run the coffee shop simulation."""
+    try:
+        with open('menu.json', 'r', encoding='utf-8') as file:
+            menu = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading menu: {e}")
+        return
 
-# Personalized Thank You
-if PAYMENT_METHOD == "cash":
-    print(f"\nThank you for paying with cash, {name.capitalize()}!")
-    print("We'll have your order ready for you in just a few moments.")
-elif PAYMENT_METHOD == "card":
-    print(f"\nThank you, {name.capitalize()}.")
-    print("Please insert your card, and we'll process your payment right away.")
+    name = get_customer_name()
+    print(f"\nWelcome, {name}!")
 
-# Final Message with Order Details
-print(f"\nJust a reminder {name.capitalize()}, your order includes:")
-for i, (item, quantity) in enumerate(order_items):
-    print(f"\t{i + 1}. {quantity} {item}{'s' if quantity > 1 else ''}")
+    order = take_order(menu)
+    if not order:
+        print("\nNo order was placed.")
+        return
 
-print(f"""\nThanks again for choosing Jitters's Coffee Shop {name.capitalize()}!
-We hope you enjoy your drinks!""")
+    print_order_summary(order)
+
+    total = calculate_total(order, menu)
+    print(f"\nYour total is: £{total:.2f}")
+
+    handle_payment(total, name)
+    thank_you_message(name)
+
+
+if __name__ == "__main__":
+    main()

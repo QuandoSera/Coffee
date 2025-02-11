@@ -1,9 +1,5 @@
-""" This is the newly added backend. It features a menu where we can add items, 
-remove items, and update the prices """
-
 import json
-
-import re # Import the regular expression library
+import re
 
 def load_menu():
     """Loads the menu data from 'menu.json'."""
@@ -12,7 +8,7 @@ def load_menu():
             return json.load(file)
     except FileNotFoundError:
         print("\nError: 'menu.json' not found. Creating a new menu.")
-        return {}  # Return an empty dictionary if the file is missing
+        return {}
 
 def save_menu(menu):
     """Saves the menu data to 'menu.json'."""
@@ -20,26 +16,27 @@ def save_menu(menu):
     try:
         with open('menu.json', 'w', encoding='utf-8') as file:
             json.dump(menu, file, indent=4)
-    except (IOError, json.JSONDecodeError) as e:  # Catch potential errors
+    except (IOError, json.JSONDecodeError) as e:
         print(f"\nError saving menu: {e}")
 
 def add_item(menu):
-    """Adds a new item to the menu."""
+    """Adds a new item to the menu with validation."""
     new_item = input("\nEnter the name of the new item: ").strip()
-    if re.match(r"^[a-zA-Z][a-zA-Z0-9_]{2,19}$", new_item):
-        while True:  # Keep asking for input
+    # Updated regex pattern to allow spaces (and now requires at least one alphabetic character)
+    if re.match(r"^[a-zA-Z][a-zA-Z0-9\s_]{2,19}$", new_item):  
+        while True:
             new_price_str = input(f"\nEnter the price for {new_item}: £")
             try:
                 new_price = float(new_price_str)
                 if new_price <= 0:
-                    raise ValueError("\nPrice must be positive.")  # Extra check
+                    raise ValueError("\nPrice must be positive.")
                 menu[new_item] = new_price
                 print(f"\n{new_item} added to the menu successfully!")
-                break  # Exit the loop on successful input
+                break
             except ValueError:
                 print("\nInvalid price. Please enter a positive number.")
-    else:  # This 'else' must align with the 'if'
-        print("\nInvalid format. Please use letters, numbers, and underscores (3-20 characters)")
+    else:
+        print("\nInvalid format. Please use letters, numbers, spaces, and underscores (3-20 characters)")
 
 def confirm(message):
     """Asks the user for confirmation."""
@@ -53,31 +50,28 @@ def confirm(message):
             print("\nInvalid input. Please enter 'yes' or 'no'.")
 
 def remove_item(menu):
-    """Removes items from the menu."""
+    """Removes an item from the menu with confirmation."""
     item_to_remove = input("\nEnter the name of the item to remove: ").strip().lower()
-    if item_to_remove in (item.lower() for item in menu):
+    if item_to_remove in menu:
         if confirm(f"\nAre you sure you want to remove {item_to_remove}? "):
-            for item in list(menu.keys()):
-                if item.lower() == item_to_remove:
-                    del menu[item]
-                    break
+            del menu[item_to_remove]
             print(f"\n{item_to_remove} removed from the menu.")
         else:
-            print("\nRemoval canceled.")
+            print("\nRemoval cancelled.")
     else:
         print(f"\n{item_to_remove} not found in the menu.")
 
 def update_price(menu):
-    """Updates the price of items on the menu.""£
+    """Updates the price of an item in the menu with validation."""
     item_to_update = input("\nEnter the name of the item to update: ").strip().lower()
-    if item_to_update in menu.keys():  # Use lowercase for the menu too
+    if item_to_update in menu:
         while True:
             new_price_str = input(f"\nEnter the new price for {item_to_update}: £")
             try:
                 new_price = float(new_price_str)
                 if new_price <= 0:
                     raise ValueError("\nPrice must be positive.")
-                menu[item_to_update] = new_price  # Keep original capitalization in the menu
+                menu[item_to_update] = new_price
                 print(f"\nPrice for {item_to_update} updated successfully!")
                 break
             except ValueError:
@@ -91,7 +85,6 @@ def display_menu(menu):
     for item, price in menu.items():
         print(f"\t• {item.capitalize()}: £{price:.2f}")
 
-# Main logic
 if __name__ == "__main__":
     menu = load_menu()
 
@@ -114,11 +107,11 @@ if __name__ == "__main__":
         elif choice == '4':
             update_price(menu)
         elif choice == '5':
-            print("\nExiting...")  # Add this line
+            print("\nExiting...")
             if confirm("\nAre you sure you want to exit? "):
-                save_menu(menu)  # Save the menu before exiting
+                save_menu(menu)
                 print("\nGoodbye!")
-                break  # Exit the loop
+                break
             else:
                 print("\nContinuing menu management...")
         else:
